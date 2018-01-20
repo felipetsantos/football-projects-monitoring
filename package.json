@@ -1,0 +1,33 @@
+{
+  "name": "football-projects-monitoring",
+  "version": "0.0.1",
+  "description": "Monitoring football projects on github and twitter ",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipetsantos/football-projects-monitoring.git"
+  },
+  "keywords": [
+    "football",
+    "soccer",
+    "sports",
+    "monitoring"
+  ],
+  "author": "Felipe Santos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/felipetsantos/football-projects-monitoring/issues"
+  },
+  "homepage": "https://github.com/felipetsantos/football-projects-monitoring#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "joi": "^13.1.1",
+    "yargs": "^10.1.1"
+  }
+}
