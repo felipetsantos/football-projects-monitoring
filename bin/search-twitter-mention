@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+require('../search-twitter-mention/index').cli();
