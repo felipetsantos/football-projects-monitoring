@@ -1,5 +1,6 @@
 require('dotenv').config({ silent: true })
 const joi = require('joi');
+const logger = require('winston');
 
 const envVarsSchema = joi.object({
   LOGGER_LEVEL: joi.string()
@@ -25,5 +26,11 @@ const config = {
     enabled: envVars.LOGGER_ENABLED
   }
 };
+
+logger.level = config.logger.level;
+
+if (!config.logger.enabled) {
+  logger.remove(logger.transports.Console);
+}
 
 module.exports = config;

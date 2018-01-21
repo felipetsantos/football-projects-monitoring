@@ -1,5 +1,6 @@
 var argv = require('yargs').argv;
 var fatalError = null;
+var logger = require('winston');
 try{
 var config = require('../config/config');
 }catch(err){
@@ -18,6 +19,7 @@ var searchTwitterMention = function (term, limit, callback){
     console.log(fatalError);
     return [];
   }
+  logger.error("no implemented.");
   console.log("\nTerm:" + term + ", limit:" + limit + "\nTO DO");
   var list = [];
   callback(list,null);
@@ -30,11 +32,11 @@ var cli = function() {
   var yargs = require('yargs')
   .usage('Usage: $0 -t [word] -l [num]')
   .demandOption(['t','l'])
-  .describe('t', 'term for search')
+  .describe('t', 'search term')
   .describe('l', 'result limit')
   .alias('t', 'term')
   .alias('l', 'limit')
-  .example('$0 -t football -l 10', 'Get 10 twitter mention related to football')
+  .example('$0 -t football -l 10', 'returns 10 twitter mention related to football term')
   .help('help')
   .alias('h', 'help')
   .epilog('Copyright 2018 Felipe Santos');
@@ -46,5 +48,6 @@ var cli = function() {
     });    
   }
 }
+
 exports.searchTwitterbMention = searchTwitterMention;
 exports.cli = cli;

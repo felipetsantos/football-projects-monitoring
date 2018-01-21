@@ -1,4 +1,5 @@
 var argv = require('yargs').argv;
+var logger = require('winston');
 var fatalError = null;
 try{
 var config = require('../config/config');
@@ -18,6 +19,7 @@ var searchGithubRepositories = function (term, limit, callback){
     console.log(fatalError);
     return [];
   }
+  logger.error('No implemented');
   console.log("\nTerm:" + term + ", limit:" + limit + "\nTO DO");
   var list = [];
   callback(list,null);
