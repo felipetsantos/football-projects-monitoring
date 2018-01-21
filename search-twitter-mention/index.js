@@ -2,20 +2,9 @@ const Twitter = require('twitter')
 const viewTwittes = require('./view')
 let fatalError = null
 const logger = require('winston')
-let configTwitter = {}
+require('../config/config')
+let configTwitter =  require('./config')
 
-try {
-  require('../config/config')
-} catch (err) {
-  fatalError = err.message
-}
-try {
-  configTwitter = require('./config')
-} catch (err) {
-  fatalError += fatalError != null
-    ? '\n' + err.message
-    : err.message
-}
 
 const client = new Twitter({
   consumer_key: configTwitter.consumerKey,
@@ -25,23 +14,15 @@ const client = new Twitter({
 })
 
 const adaptTwitterResult = function (items) {
-  let list = []
-  for (let item of items) {
-    list.push({
-      createdAt: item.created_at,
-      text: item.text,
-      userName: item.user.name,
-      twitterUser: item.user.screen_name
-    })
-  }
-  return list
+  return items.map((item) => ({
+    createdAt: item.created_at,
+    text: item.text,
+    userName: item.user.name,
+    twitterUser: item.user.screen_name
+  }))
 }
 
 const searchTwitterMention = async function (term, limit, callback) {
-  if (fatalError != null) {
-    console.log(fatalError)
-    return []
-  }
   logger.verbose('Term:' + term + ', limit:' + limit + '\n')
   try {
     var params = {

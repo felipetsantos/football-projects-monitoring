@@ -1,22 +1,9 @@
 const logger = require('winston')
 const octokit = require('@octokit/rest')()
 const viewRepo = require('./view')
+require('../config/config')
+let configGithub = require('./config')
 
-let fatalError = null
-let configGithub = {}
-
-try {
-  require('../config/config')
-} catch (err) {
-  fatalError = err.message
-}
-try {
-  configGithub = require('./config')
-} catch (err) {
-  fatalError += fatalError != null
-    ? '\n' + err.message
-    : err.message
-}
 
 octokit.authenticate({
   type: 'token',
@@ -34,32 +21,25 @@ const buildGithubParams = function (term, limit) {
 }
 
 const adaptReposResult = function (items) {
-  let list = []
-  for (let item of items) {
-    list.push({
-      name: item.name,
-      fullName: item.full_name,
-      description: item.description,
-      htmlUrl: item.html_url,
-      score: item.score,
-      githubUser: item.owner.login,
-      language: item.language
-    })
-  }
-  return list
+  return items.map((item)=>({
+    name: item.name,
+    fullName: item.full_name,
+    description: item.description,
+    htmlUrl: item.html_url,
+    score: item.score,
+    githubUser: item.owner.login,
+    language: item.language      
+  }))
 }
 
 const searchGithubRepositories = async function (term, limit, callback) {
-  if (fatalError != null) {
-    logger.error(fatalError)
-    return []
-  }
   logger.verbose('Term:' + term + ', limit:' + limit + '\n')
   const params = buildGithubParams(term, limit)
   try {
     logger.verbose('loading repositories from github...')
     const result = await octokit.search.repos(params)
     logger.verbose('repositories loaded.')
+
     const list = adaptReposResult(result.data.items)
     if (callback != null) {
       callback(list, null)

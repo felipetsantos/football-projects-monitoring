@@ -17,7 +17,7 @@ const {
   value: envVars
 } = joi.validate(process.env, envVarsSchema)
 if (error) {
-  throw new Error(`Missging environment variable: ${error.message}`)
+  throw new Error(`Missing environment variable: ${error.message}`)
 }
 
 const configTwitter = {
