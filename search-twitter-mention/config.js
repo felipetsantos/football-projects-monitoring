@@ -17,13 +17,11 @@ if (error) {
   throw new Error(`Missging environment variable: ${error.message}`)
 }
 
-const config = {
-  twitter: {
+const configTwitter = {
     consumerKey: envVars.TWITTER_CONSUMER_KEY,
     consumerSecret: envVars.TWITTER_CONSUMER_SECRET,
     accessTokenKey: envVars.TWITTER_ACCESS_TOKEN_KEY,
     accessTokenSecret: envVars.TWITTER_ACCESS_TOKEN_SECRET
-  }
 }
 
-module.exports = config
+module.exports = configTwitter
