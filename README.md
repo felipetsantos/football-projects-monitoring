@@ -44,7 +44,8 @@ It will download all project dependencies.
 ``` shell
 bin/football-projects-monitoring
 ```
-
+It will show the 10 projects that have more stars and theirs twettes mentions. Example:
+![Result example](result-example.png) 
 ### Component search github repositories
 
 to search github repositories related to a term, excute the following command:

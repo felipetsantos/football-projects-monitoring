@@ -7,10 +7,11 @@ const viewTwittes = function (tweets) {
     strTweets = 'No tweets found'
   } else {
     for (let tweet of tweets) {
-      const who = chalk.blue(tweet.userName, '(@', tweet.twitterUser, ') - ', dateFormat(tweet.createdAt, 'fullDate'))
+      const who = `${tweet.userName}(@${tweet.twitterUser}) - ${dateFormat(tweet.createdAt, 'fullDate')}`
+      const fWho = chalk.blue(who)
       strTweets += `
     ---
-    ${who}
+    ${fWho}
     ${tweet.text}
     `
     }
