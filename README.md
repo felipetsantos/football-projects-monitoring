@@ -7,7 +7,7 @@
 ## Setup
 1. Clone repository
 2. Navigate to project root folder
-3. Execute follow command:
+3. Execute the following command:
 ```shell
 npm install
 ```
