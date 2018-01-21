@@ -57,7 +57,9 @@ var searchGithubRepositories = async function (term, limit, callback) {
     const result = await octokit.search.repos(params)
     console.log('repositories loaded.')
     var list = adaptReposResult(result.data.items);
-    callback(list, null)
+    if(callback != null){
+      callback(list, null);
+    }
     return list;
   } catch (err) {
     logger.error(err)

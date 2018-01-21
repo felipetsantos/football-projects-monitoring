@@ -50,8 +50,10 @@ var searchTwitterMention =  async function (term, limit, callback) {
     var result = await client.get('search/tweets', params)
     var list = adaptTwitterResult(result.statuses)
     console.log("loaded");
-    callback(list, null)
-    return result    
+    if(callback != null){
+      callback(list, null)
+    }
+    return list   
   }catch(err){
     logger.error(err);
     return null
@@ -87,5 +89,5 @@ var cli = function () {
   }
 }
 
-exports.searchTwitterbMention = searchTwitterMention
+exports.searchTwitterMention = searchTwitterMention
 exports.cli = cli
