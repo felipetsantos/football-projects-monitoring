@@ -9,9 +9,9 @@ try {
 try {
   var configGithub = require('./config')
 } catch (err) {
-  fatalError += fatalError != null
-    ? '\n' + err.message
-    : err.message
+  fatalError += fatalError != null ?
+    '\n' + err.message :
+    err.message
 }
 let octokit = require('@octokit/rest')()
 
@@ -29,9 +29,9 @@ var buildGithubParams = function (term, limit) {
     per_page: limit
   }
 }
-var adaptReposResult = function(items){
+var adaptReposResult = function (items) {
   var list = []
-  for(let item of items){
+  for (let item of items) {
     list.push({
       name: item.name,
       fullName: item.full_name,
@@ -57,7 +57,7 @@ var searchGithubRepositories = async function (term, limit, callback) {
     const result = await octokit.search.repos(params)
     logger.verbose('repositories loaded.')
     var list = adaptReposResult(result.data.items);
-    if(callback != null){
+    if (callback != null) {
       callback(list, null);
     }
     return list;
@@ -69,29 +69,29 @@ var searchGithubRepositories = async function (term, limit, callback) {
 
 var cli = function () {
   var yargs = require('yargs')
-  .usage('Usage: $0 -t [word] -l [num]')
-  .demandOption(['t', 'l'])
-  .describe('t', 'search term')
-  .describe('l', 'result limit')
-  .alias('t', 'term')
-  .alias('l', 'limit')
-  .example('$0 -t football -l 10', 'returns 10 repositories related to football term')
-  .help('help')
-  .alias('h', 'help')
-  .epilog('Copyright 2018 Felipe Santos')
+    .usage('Usage: $0 -t [word] -l [num]')
+    .demandOption(['t', 'l'])
+    .describe('t', 'search term')
+    .describe('l', 'result limit')
+    .alias('t', 'term')
+    .alias('l', 'limit')
+    .example('$0 -t football -l 10', 'returns 10 repositories related to football term')
+    .help('help')
+    .alias('h', 'help')
+    .epilog('Copyright 2018 Felipe Santos')
 
   var argv = yargs.argv
   if (argv.t && argv.l) {
     searchGithubRepositories(argv.t, argv.l, function (list, err) {
       console.log("Projects Found:\n")
-      for(let item of list){
+      for (let item of list) {
         var str = 'Name: ' + item.name +
-        '\nFull Name:' + item.fullName +
-        '\nRepo URL:' + item.htmlUrl +
-        '\nScore:' + item.score +
-        '\nLanguage' + item.language +
-        '\nDescription:' + item.description +
-        '\nOnwer:' + item.githubUser + '\n\n'
+          '\nFull Name:' + item.fullName +
+          '\nRepo URL:' + item.htmlUrl +
+          '\nScore:' + item.score +
+          '\nLanguage' + item.language +
+          '\nDescription:' + item.description +
+          '\nOnwer:' + item.githubUser + '\n\n'
         console.log(str);
       }
     })
