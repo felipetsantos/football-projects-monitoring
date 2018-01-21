@@ -1,29 +1,28 @@
-const logger = require('winston');
-var config = require('./config/config');
-var argv = require('yargs').argv;
-var searchGithubRepositories = require('./search-github-repositories/index');
-var searchTwitterMention = require('./search-github-repositories/index');
+const logger = require('winston')
+var config = require('./config/config')
+var argv = require('yargs').argv
+var searchGithubRepositories = require('./search-github-repositories/index')
+var searchTwitterMention = require('./search-github-repositories/index')
 
-var footballProjectsMonitoring = function(callback){
+var footballProjectsMonitoring = function (callback) {
   var result = []
-  logger.error("not implemented");
-  console.log("TO DO");
-  callback(result);
-  return result;
+  logger.error('not implemented')
+  console.log('TO DO')
+  callback(result)
+  return result
 }
 
-var cli = function() {
+var cli = function () {
   var yargs = require('yargs')
   .usage('Usage: $0')
   .example('$0 ', 'Get 10 github project related to football list their descriptions and twitter mention')
   .help('help')
   .alias('h', 'help')
-  .epilog('Copyright 2018 Felipe Santos');
-  
-  footballProjectsMonitoring(function(result) {
-    console.log('Result: ' + result + "\n");
-  });    
-  
+  .epilog('Copyright 2018 Felipe Santos')
+
+  footballProjectsMonitoring(function (result) {
+    console.log('Result: ' + result + '\n')
+  })
 }
-exports.footballProjectsMonitoring = searchTwitterMention;
-exports.cli = cli;
+exports.footballProjectsMonitoring = searchTwitterMention
+exports.cli = cli

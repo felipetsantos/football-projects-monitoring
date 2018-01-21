@@ -1,37 +1,74 @@
-var argv = require('yargs').argv;
-var logger = require('winston');
-var fatalError = null;
-try{
-var config = require('../config/config');
-}catch(err){
-  fatalError = err.message;
+var argv = require('yargs').argv
+var logger = require('winston')
+var fatalError = null
+try {
+  var config = require('../config/config')
+} catch (err) {
+  fatalError = err.message
 }
-try{
-var configGithub = require('./config');
-}catch(err){
-  fatalError += fatalError != null 
-    ? "\n" + err.message : 
-    err.message;
+try {
+  var configGithub = require('./config')
+} catch (err) {
+  fatalError += fatalError != null
+    ? '\n' + err.message
+    : err.message
 }
+let octokit = require('@octokit/rest')()
 
-var searchGithubRepositories = function (term, limit, callback){
-  if(fatalError != null){
-    console.log(fatalError);
-    return [];
+octokit.authenticate({
+  type: 'token',
+  token: configGithub.token
+})
+
+var buildGithubParams = function (term, limit) {
+  return {
+    q: term,
+    sort: 'stars',
+    order: 'desc',
+    page: 1,
+    per_page: limit
   }
-  logger.error('No implemented');
-  console.log("\nTerm:" + term + ", limit:" + limit + "\nTO DO");
-  var list = [];
-  callback(list,null);
-  return list;
-  
+}
+var adaptReposResult = function(items){
+  var list = []
+  for(let item of items){
+    list.push({
+      name: item.name,
+      fullName: item.full_name,
+      description: item.description,
+      htmlUrl: item.html_url,
+      score: item.score,
+      githubUser: item.owner.login,
+      language: item.language
+    })
+
+  }
+  return list
+}
+var searchGithubRepositories = async function (term, limit, callback) {
+  if (fatalError != null) {
+    logger.error(fatalError)
+    return []
+  }
+  logger.info('Term:' + term + ', limit:' + limit + '\n')
+  var params = buildGithubParams(term, limit)
+  try {
+    console.log('loading repositories from github ...')
+    const result = await octokit.search.repos(params)
+    console.log('repositories loaded.')
+    var list = adaptReposResult(result.data.items);
+    callback(list, null)
+    return list;
+  } catch (err) {
+    logger.error(err)
+    return null
+  }
 }
 
-
-var cli = function() {
+var cli = function () {
   var yargs = require('yargs')
   .usage('Usage: $0 -t [word] -l [num]')
-  .demandOption(['t','l'])
+  .demandOption(['t', 'l'])
   .describe('t', 'search term')
   .describe('l', 'result limit')
   .alias('t', 'term')
@@ -39,14 +76,24 @@ var cli = function() {
   .example('$0 -t football -l 10', 'returns 10 repositories related to football term')
   .help('help')
   .alias('h', 'help')
-  .epilog('Copyright 2018 Felipe Santos');
-  
-  var argv = yargs.argv;
+  .epilog('Copyright 2018 Felipe Santos')
+
+  var argv = yargs.argv
   if (argv.t && argv.l) {
-    searchGithubRepositories(argv.t, argv.l, function(list, err) {
-      console.log('Result: ' + list + "\n");
-    });    
+    searchGithubRepositories(argv.t, argv.l, function (list, err) {
+      console.log("Projects Found:\n")
+      for(let item of list){
+        var str = 'Name: ' + item.name +
+        '\nFull Name:' + item.fullName +
+        '\nRepo URL:' + item.htmlUrl +
+        '\nScore:' + item.score +
+        '\nLanguage' + item.language +
+        '\nDescription:' + item.description +
+        '\nOnwer:' + item.githubUser + '\n\n'
+        console.log(str);
+      }
+    })
   }
 }
-exports.searchGithubRepositories = searchGithubRepositories;
-exports.cli = cli;
+exports.searchGithubRepositories = searchGithubRepositories
+exports.cli = cli

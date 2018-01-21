@@ -1,6 +1,6 @@
 require('dotenv').config({ silent: true })
-const joi = require('joi');
-const logger = require('winston');
+const joi = require('joi')
+const logger = require('winston')
 
 const envVarsSchema = joi.object({
   LOGGER_LEVEL: joi.string()
@@ -13,9 +13,9 @@ const envVarsSchema = joi.object({
     .falsy('false')
     .default(true)
 }).unknown()
-  .required();
+  .required()
 
-const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
+const { error, value: envVars } = joi.validate(process.env, envVarsSchema)
 if (error) {
   throw new Error(`Missging environment variable: ${error.message}`)
 }
@@ -25,12 +25,12 @@ const config = {
     level: envVars.LOGGER_LEVEL,
     enabled: envVars.LOGGER_ENABLED
   }
-};
-
-logger.level = config.logger.level;
-
-if (!config.logger.enabled) {
-  logger.remove(logger.transports.Console);
 }
 
-module.exports = config;
+logger.level = config.logger.level
+
+if (!config.logger.enabled) {
+  logger.remove(logger.transports.Console)
+}
+
+module.exports = config

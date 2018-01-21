@@ -22,7 +22,7 @@ const config = {
     consumerKey: envVars.TWITTER_CONSUMER_KEY,
     consumerSecret: envVars.TWITTER_CONSUMER_SECRET,
     accessTokenKey: envVars.TWITTER_ACCESS_TOKEN_KEY,
-    accessTokenSecret: envVars.TWITTER_ACCESS_TOKEN_SECRET,
+    accessTokenSecret: envVars.TWITTER_ACCESS_TOKEN_SECRET
   }
 }
 

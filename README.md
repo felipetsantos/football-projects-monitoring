@@ -1,6 +1,6 @@
 ## Requirements
-- Nodejs
-- Npm
+- Nodejs 8.0.0+
+- Npm 5.0.0+
 - Github api key
 - Twitter api keys
 
