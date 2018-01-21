@@ -44,7 +44,7 @@ It will download all project dependencies.
 ``` shell
 bin/football-projects-monitoring
 ```
-It will show the 10 projects that have more stars and theirs twettes mentions. Example:
+The command shows a maximum of 10 projects from Github that contains the terms `football` and `bet` developed using `javascript`. They are ordered by stars rating, best ones ranked first. Each listed project is followed by the last 10 tweets mentioning the project. Example:
 ![Result example](result-example.png) 
 ### Component search github repositories
 
