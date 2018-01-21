@@ -1,26 +1,30 @@
-var argv = require('yargs').argv
-var logger = require('winston')
-var fatalError = null
+const argv = require('yargs').argv
+const logger = require('winston')
+const octokit = require('@octokit/rest')()
+
+let fatalError = null
+let configGithub = {}
+let config = {}
+
 try {
-  var config = require('../config/config')
+  config = require('../config/config')
 } catch (err) {
   fatalError = err.message
 }
 try {
-  var configGithub = require('./config')
+  configGithub = require('./config')
 } catch (err) {
   fatalError += fatalError != null ?
     '\n' + err.message :
     err.message
 }
-let octokit = require('@octokit/rest')()
 
 octokit.authenticate({
   type: 'token',
   token: configGithub.token
 })
 
-var buildGithubParams = function (term, limit) {
+const buildGithubParams = function (term, limit) {
   return {
     q: term,
     sort: 'stars',
@@ -29,8 +33,9 @@ var buildGithubParams = function (term, limit) {
     per_page: limit
   }
 }
-var adaptReposResult = function (items) {
-  var list = []
+
+const adaptReposResult = function (items) {
+  let list = []
   for (let item of items) {
     list.push({
       name: item.name,
@@ -45,18 +50,19 @@ var adaptReposResult = function (items) {
   }
   return list
 }
-var searchGithubRepositories = async function (term, limit, callback) {
+
+const searchGithubRepositories = async function (term, limit, callback) {
   if (fatalError != null) {
     logger.error(fatalError)
     return []
   }
   logger.verbose('Term:' + term + ', limit:' + limit + '\n')
-  var params = buildGithubParams(term, limit)
+  const params = buildGithubParams(term, limit)
   try {
     logger.verbose('loading repositories from github...')
     const result = await octokit.search.repos(params)
     logger.verbose('repositories loaded.')
-    var list = adaptReposResult(result.data.items);
+    const list = adaptReposResult(result.data.items);
     if (callback != null) {
       callback(list, null);
     }
@@ -67,8 +73,8 @@ var searchGithubRepositories = async function (term, limit, callback) {
   }
 }
 
-var cli = function () {
-  var yargs = require('yargs')
+const cli = function () {
+  const yargs = require('yargs')
     .usage('Usage: $0 -t [word] -l [num]')
     .demandOption(['t', 'l'])
     .describe('t', 'search term')
@@ -80,18 +86,20 @@ var cli = function () {
     .alias('h', 'help')
     .epilog('Copyright 2018 Felipe Santos')
 
-  var argv = yargs.argv
+  const argv = yargs.argv
   if (argv.t && argv.l) {
     searchGithubRepositories(argv.t, argv.l, function (list, err) {
       console.log("Projects Found:\n")
       for (let item of list) {
-        var str = 'Name: ' + item.name +
-          '\nFull Name:' + item.fullName +
-          '\nRepo URL:' + item.htmlUrl +
-          '\nScore:' + item.score +
-          '\nLanguage' + item.language +
-          '\nDescription:' + item.description +
-          '\nOnwer:' + item.githubUser + '\n\n'
+        const str = `Name: ${item.name}
+Full Name: ${item.fullName}
+Repo URL: ${item.htmlUrl}
+Score: ${item.score}
+Language: ${item.language}
+Description: ${item.description}
+Onwer: ${item.githubUser}
+
+`
         console.log(str);
       }
     })

@@ -1,18 +1,18 @@
 const logger = require('winston')
-var config = require('./config/config')
-var argv = require('yargs').argv
-var searchGithubRepositories = require('./search-github-repositories/index')
-var searchTwitterMention = require('./search-twitter-mention/index')
+const config = require('./config/config')
+const argv = require('yargs').argv
+const searchGithubRepositories = require('./search-github-repositories/index')
+const searchTwitterMention = require('./search-twitter-mention/index')
 
-var footballProjectsMonitoring = async function (callback) {
-  var term = "football+bet+language:javascript"
+const footballProjectsMonitoring = async function (callback) {
+  const term = "football+bet+language:javascript"
   console.log("Loading Projects...");
-  var repositories = await searchGithubRepositories.searchGithubRepositories(term, 10)
-  var finalList = []
+  const repositories = await searchGithubRepositories.searchGithubRepositories(term, 10)
+  let finalList = []
   for (let repo of repositories) {
-    var mention = "#" + repo.name;
+    const mention = "#" + repo.name;
     try {
-      var result = await searchTwitterMention.searchTwitterMention(mention, 10, null);
+      let result = await searchTwitterMention.searchTwitterMention(mention, 10, null);
       repo["twittes"] = []
       repo["twittes"] = result
       finalList.push(repo);
@@ -28,8 +28,8 @@ var footballProjectsMonitoring = async function (callback) {
   return finalList
 }
 
-var cli = function () {
-  var yargs = require('yargs')
+const cli = function () {
+  require('yargs')
     .usage('Usage: $0')
     .example('$0 ', 'Get 10 github project related to football list their descriptions and twitter mention')
     .help('help')
@@ -39,24 +39,25 @@ var cli = function () {
   footballProjectsMonitoring(function (result) {
     console.log("Projects found:\n");
     for (let item of result) {
-      var str = 'Name: ' + item.name +
-        '\nFull Name:' + item.fullName +
-        '\nRepo URL:' + item.htmlUrl +
-        '\nScore:' + item.score +
-        '\nLanguage' + item.language +
-        '\nDescription:' + item.description +
-        '\nOnwer:' + item.githubUser
-      str += "\nTweets:\n"
-      var str1 = "";
+      let str =`Name: ${item.name}
+Full Name: ${item.fullName}
+Repo URL: ${item.htmlUrl}
+Score: ${item.score}
+Language: ${item.language}
+Description: ${item.description}
+Onwer: ${item.githubUser}
+Tweets:
+`
+      let str1 = "";
       if (item.twittes.length == 0) {
         str1 = "No tweets found";
       }
 
       for (let tweet of item.twittes) {
-        str1 += tweet.userName +
-          "(@" + tweet.twitterUser + ")" +
-          " - " + tweet.createdAt +
-          "\n" + tweet.text + "\n-------\n"
+        str1 += `${tweet.userName}(@${tweet.twitterUser}) - ${tweet.createdAt}
+${tweet.text}
+-------
+`
 
       }
       str += str1 + "\n-------\n"

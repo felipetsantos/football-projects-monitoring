@@ -1,30 +1,33 @@
 var argv = require('yargs').argv
-var Twitter = require('twitter')
-var fatalError = null
-var logger = require('winston')
+const chalk = require('chalk');
+const Twitter = require('twitter')
+const fatalError = null
+const logger = require('winston')
+let configTwitter = {}
+let config = {}
 
 try {
-  var config = require('../config/config')
+  config = require('../config/config')
 } catch (err) {
   fatalError = err.message
 }
 try {
-  var configTwitter = require('./config')
+  configTwitter = require('./config')
 } catch (err) {
   fatalError += fatalError != null ?
     '\n' + err.message :
     err.message
 }
 
-var client = new Twitter({
+const client = new Twitter({
   consumer_key: configTwitter.consumerKey,
   consumer_secret: configTwitter.consumerSecret,
   access_token_key: configTwitter.accessTokenKey,
   access_token_secret: configTwitter.accessTokenSecret
 })
 
-var adaptTwitterResult = function (items) {
-  var list = []
+const adaptTwitterResult = function (items) {
+  let list = []
   for (let item of items) {
     list.push({
       createdAt: item.created_at,
@@ -35,7 +38,8 @@ var adaptTwitterResult = function (items) {
   }
   return list;
 }
-var searchTwitterMention = async function (term, limit, callback) {
+
+const searchTwitterMention = async function (term, limit, callback) {
   if (fatalError != null) {
     console.log(fatalError)
     return []
@@ -61,8 +65,8 @@ var searchTwitterMention = async function (term, limit, callback) {
 
 }
 
-var cli = function () {
-  var yargs = require('yargs')
+const cli = function () {
+  const yargs = require('yargs')
     .usage('Usage: $0 -t [word] -l [num]')
     .demandOption(['t', 'l'])
     .describe('t', 'search term')
@@ -74,15 +78,16 @@ var cli = function () {
     .alias('h', 'help')
     .epilog('Copyright 2018 Felipe Santos')
 
-  var argv = yargs.argv
+  const argv = yargs.argv
   if (argv.t && argv.l) {
     searchTwitterMention(argv.t, argv.l, function (list, err) {
-      console.log("Tweets:\n");
+      console.log("Tweets:");
       for (let item of list) {
-        var str = item.userName +
-          "(@" + item.twitterUser + ")" +
-          " - " + item.createdAt +
-          "\n" + item.text + "\n-------\n"
+        const fName = chalk.blue.bold(item.userName);
+        const str = `${fName}(@${item.twitterUser}) - ${item.createdAt}
+${item.text}
+-------
+        `
         console.log(str);
       }
     })
