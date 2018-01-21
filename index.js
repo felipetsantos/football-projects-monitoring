@@ -6,6 +6,7 @@ var searchTwitterMention = require('./search-twitter-mention/index')
 
 var footballProjectsMonitoring = async function (callback) {
   var term = "football+bet+language:javascript"
+  console.log("Loading Projects...");
   var repositories = await searchGithubRepositories.searchGithubRepositories(term, 10)
   var finalList = []
   for(let repo of repositories){
@@ -20,6 +21,7 @@ var footballProjectsMonitoring = async function (callback) {
       logger.error(err);
     }   
   }
+  console.log("Projects loaded...");
   if(callback != null){
     callback(finalList)
   }
@@ -35,7 +37,7 @@ var cli = function () {
   .epilog('Copyright 2018 Felipe Santos')
 
   footballProjectsMonitoring(function (result) {
-    console.log("#############Result###########\n");
+    console.log("Projects found:\n");
     for(let item of result){
       var str = 'Name: ' + item.name +
       '\nFull Name:' + item.fullName +
@@ -45,9 +47,12 @@ var cli = function () {
       '\nDescription:' + item.description +
       '\nOnwer:' + item.githubUser 
       str += "\nTweets:\n"
-      
       var str1 = "";
-      for(let tweet of item["twittes"]){
+      if(item.twittes.length == 0){
+        str1 = "No tweets found";
+      }
+
+      for(let tweet of item.twittes){
         str1 += tweet.userName +
         "(@" + tweet.twitterUser + ")" + 
         " - " + tweet.createdAt + 

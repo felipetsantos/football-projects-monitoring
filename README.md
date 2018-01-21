@@ -5,14 +5,13 @@
 - Twitter api keys
 
 ## Setup
-
 1. Clone repository
-2. Navegate to project root folder
+2. Navigate to project root folder
 3. Execute follow command:
 ```shell
 npm install
 ```
-It will donwload all project dependencies.
+It will download all project dependencies.
 
 #### Environment variables
 
@@ -40,7 +39,7 @@ It will donwload all project dependencies.
 
 ### Main application
 1. Replace the variable values inside `.env` file
-2. From project root folder, execute follow command:
+2. From project root folder, execute the following command:
 
 ``` shell
 bin/football-projects-monitoring
@@ -48,12 +47,12 @@ bin/football-projects-monitoring
 
 ### Component search github repositories
 
-For search github repositories related to a term, excute follow command:
+to search github repositories related to a term, excute the following command:
 
 ``` shell
 bin/search-github-repositories -t football -l 10
 ```
-or follow command for help:
+or the following command for help:
 
 ``` shell
 bin/search-github-repositories -h
@@ -61,12 +60,12 @@ bin/search-github-repositories -h
 
 ### Component search twitter mention
 
-For search twitter mention related to a term, execute follow command:
+to search twitter mention related to a term, execute the following command:
 
 ``` shell
 bin/search-twitter-mention -t football -l 10
 ```
-or follow command for help:
+or the following command for help:
 
 ``` shell
 bin/search-twitter-mention -h
