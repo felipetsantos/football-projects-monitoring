@@ -40,16 +40,16 @@ var searchTwitterMention =  async function (term, limit, callback) {
     console.log(fatalError)
     return []
   }
-  logger.info('Term:' + term + ', limit:' + limit + '\n');
+  logger.verbose('Term:' + term + ', limit:' + limit + '\n');
   try{
     var params = {
       q: term, 
       count:limit
     }
-    console.log("loading twitter mention for " + term + "...")
+    logger.verbose("loading twitter mention for " + term + "...")
     var result = await client.get('search/tweets', params)
     var list = adaptTwitterResult(result.statuses)
-    console.log("loaded");
+    logger.verbose("loaded");
     if(callback != null){
       callback(list, null)
     }

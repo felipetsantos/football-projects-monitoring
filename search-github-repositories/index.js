@@ -50,12 +50,12 @@ var searchGithubRepositories = async function (term, limit, callback) {
     logger.error(fatalError)
     return []
   }
-  logger.info('Term:' + term + ', limit:' + limit + '\n')
+  logger.verbose('Term:' + term + ', limit:' + limit + '\n')
   var params = buildGithubParams(term, limit)
   try {
-    console.log('loading repositories from github ...')
+    logger.verbose('loading repositories from github...')
     const result = await octokit.search.repos(params)
-    console.log('repositories loaded.')
+    logger.verbose('repositories loaded.')
     var list = adaptReposResult(result.data.items);
     if(callback != null){
       callback(list, null);
