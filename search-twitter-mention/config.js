@@ -1,15 +1,15 @@
 const joi = require('joi')
 
 const envVarsSchema = joi.object({
-    TWITTER_CONSUMER_KEY: joi.string()
+  TWITTER_CONSUMER_KEY: joi.string()
       .required(),
-    TWITTER_CONSUMER_SECRET: joi.string()
+  TWITTER_CONSUMER_SECRET: joi.string()
       .required(),
-    TWITTER_ACCESS_TOKEN_KEY: joi.string()
+  TWITTER_ACCESS_TOKEN_KEY: joi.string()
       .required(),
-    TWITTER_ACCESS_TOKEN_SECRET: joi.string()
+  TWITTER_ACCESS_TOKEN_SECRET: joi.string()
       .required()
-  }).unknown()
+}).unknown()
   .required()
 
 const {

@@ -4,17 +4,25 @@ require('dotenv').config({
 const joi = require('joi')
 const logger = require('winston')
 
+const logLevels = [
+  'error',
+  'warn',
+  'info',
+  'verbose',
+  'debug',
+  'silly'
+]
 const envVarsSchema = joi.object({
-    LOGGER_LEVEL: joi.string()
-      .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
+  LOGGER_LEVEL: joi.string()
+      .allow(logLevels)
       .default('info'),
-    LOGGER_ENABLED: joi.boolean()
+  LOGGER_ENABLED: joi.boolean()
       .truthy('TRUE')
       .truthy('true')
       .falsy('FALSE')
       .falsy('false')
       .default(true)
-  }).unknown()
+}).unknown()
   .required()
 
 const {

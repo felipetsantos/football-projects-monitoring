@@ -1,22 +1,21 @@
-const argv = require('yargs').argv
 const logger = require('winston')
 const octokit = require('@octokit/rest')()
+const viewRepo = require('./view')
 
 let fatalError = null
 let configGithub = {}
-let config = {}
 
 try {
-  config = require('../config/config')
+  require('../config/config')
 } catch (err) {
   fatalError = err.message
 }
 try {
   configGithub = require('./config')
 } catch (err) {
-  fatalError += fatalError != null ?
-    '\n' + err.message :
-    err.message
+  fatalError += fatalError != null
+    ? '\n' + err.message
+    : err.message
 }
 
 octokit.authenticate({
@@ -46,7 +45,6 @@ const adaptReposResult = function (items) {
       githubUser: item.owner.login,
       language: item.language
     })
-
   }
   return list
 }
@@ -62,11 +60,11 @@ const searchGithubRepositories = async function (term, limit, callback) {
     logger.verbose('loading repositories from github...')
     const result = await octokit.search.repos(params)
     logger.verbose('repositories loaded.')
-    const list = adaptReposResult(result.data.items);
+    const list = adaptReposResult(result.data.items)
     if (callback != null) {
-      callback(list, null);
+      callback(list, null)
     }
-    return list;
+    return list
   } catch (err) {
     logger.error(err)
     return null
@@ -89,18 +87,10 @@ const cli = function () {
   const argv = yargs.argv
   if (argv.t && argv.l) {
     searchGithubRepositories(argv.t, argv.l, function (list, err) {
-      console.log("Projects Found:\n")
+      console.log('Projects Found:\n')
       for (let item of list) {
-        const str = `Name: ${item.name}
-Full Name: ${item.fullName}
-Repo URL: ${item.htmlUrl}
-Score: ${item.score}
-Language: ${item.language}
-Description: ${item.description}
-Onwer: ${item.githubUser}
-
-`
-        console.log(str);
+        const str = viewRepo.viewRepo(item, null)
+        console.log(str)
       }
     })
   }

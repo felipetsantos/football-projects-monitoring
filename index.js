@@ -1,27 +1,26 @@
 const logger = require('winston')
-const config = require('./config/config')
-const argv = require('yargs').argv
 const searchGithubRepositories = require('./search-github-repositories/index')
 const searchTwitterMention = require('./search-twitter-mention/index')
+const viewResult = require('./view')
 
 const footballProjectsMonitoring = async function (callback) {
-  const term = "football+bet+language:javascript"
-  console.log("Loading Projects...");
+  const term = 'football+bet+language:javascript'
+  console.log('Loading Projects...')
   const repositories = await searchGithubRepositories.searchGithubRepositories(term, 10)
   let finalList = []
   for (let repo of repositories) {
-    const mention = "#" + repo.name;
+    const mention = '#' + repo.name
     try {
-      let result = await searchTwitterMention.searchTwitterMention(mention, 10, null);
-      repo["twittes"] = []
-      repo["twittes"] = result
-      finalList.push(repo);
-      //console.log(finalList)        
+      let result = await searchTwitterMention.searchTwitterMention(mention, 10, null)
+      repo['twittes'] = []
+      repo['twittes'] = result
+      finalList.push(repo)
+      // console.log(finalList)
     } catch (err) {
-      logger.error(err);
+      logger.error(err)
     }
   }
-  console.log("Projects loaded...");
+  console.log('Projects loaded...')
   if (callback != null) {
     callback(finalList)
   }
@@ -37,32 +36,8 @@ const cli = function () {
     .epilog('Copyright 2018 Felipe Santos')
 
   footballProjectsMonitoring(function (result) {
-    console.log("Projects found:\n");
-    for (let item of result) {
-      let str =`Name: ${item.name}
-Full Name: ${item.fullName}
-Repo URL: ${item.htmlUrl}
-Score: ${item.score}
-Language: ${item.language}
-Description: ${item.description}
-Onwer: ${item.githubUser}
-Tweets:`
-      let str1 = "";
-      if (item.twittes.length == 0) {
-        str1 = "No tweets found";
-      }
-
-      for (let tweet of item.twittes) {
-        str1 += `${tweet.userName}(@${tweet.twitterUser}) - ${tweet.createdAt}
-${tweet.text}
--------
-`
-
-      }
-      str += str1 + "\n-------\n"
-      console.log(str);
-    }
+    console.log(viewResult.viewResult(result))
   })
 }
-exports.footballProjectsMonitoring = searchTwitterMention
+exports.footballProjectsMonitoring = footballProjectsMonitoring
 exports.cli = cli

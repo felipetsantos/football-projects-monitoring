@@ -1,22 +1,20 @@
-var argv = require('yargs').argv
-const chalk = require('chalk');
 const Twitter = require('twitter')
-const fatalError = null
+const viewTwittes = require('./view')
+let fatalError = null
 const logger = require('winston')
 let configTwitter = {}
-let config = {}
 
 try {
-  config = require('../config/config')
+  require('../config/config')
 } catch (err) {
   fatalError = err.message
 }
 try {
   configTwitter = require('./config')
 } catch (err) {
-  fatalError += fatalError != null ?
-    '\n' + err.message :
-    err.message
+  fatalError += fatalError != null
+    ? '\n' + err.message
+    : err.message
 }
 
 const client = new Twitter({
@@ -34,9 +32,9 @@ const adaptTwitterResult = function (items) {
       text: item.text,
       userName: item.user.name,
       twitterUser: item.user.screen_name
-    });
+    })
   }
-  return list;
+  return list
 }
 
 const searchTwitterMention = async function (term, limit, callback) {
@@ -44,25 +42,24 @@ const searchTwitterMention = async function (term, limit, callback) {
     console.log(fatalError)
     return []
   }
-  logger.verbose('Term:' + term + ', limit:' + limit + '\n');
+  logger.verbose('Term:' + term + ', limit:' + limit + '\n')
   try {
     var params = {
       q: term,
       count: limit
     }
-    logger.verbose("loading twitter mention for " + term + "...")
+    logger.verbose('loading twitter mention for ' + term + '...')
     var result = await client.get('search/tweets', params)
     var list = adaptTwitterResult(result.statuses)
-    logger.verbose("loaded");
+    logger.verbose('loaded')
     if (callback != null) {
       callback(list, null)
     }
     return list
   } catch (err) {
-    logger.error(err);
+    logger.error(err)
     return null
   }
-
 }
 
 const cli = function () {
@@ -81,15 +78,7 @@ const cli = function () {
   const argv = yargs.argv
   if (argv.t && argv.l) {
     searchTwitterMention(argv.t, argv.l, function (list, err) {
-      console.log("Tweets:");
-      for (let item of list) {
-        const fName = chalk.blue.bold(item.userName);
-        const str = `${fName}(@${item.twitterUser}) - ${item.createdAt}
-${item.text}
--------
-        `
-        console.log(str);
-      }
+      console.log(viewTwittes.viewTwittes(list))
     })
   }
 }

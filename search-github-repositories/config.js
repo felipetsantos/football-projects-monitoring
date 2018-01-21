@@ -1,9 +1,9 @@
 const joi = require('joi')
 
 const envVarsSchema = joi.object({
-    GITHUB_TOKEN: joi.string()
+  GITHUB_TOKEN: joi.string()
       .required()
-  }).unknown()
+}).unknown()
   .required()
 
 const {
