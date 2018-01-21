@@ -46,8 +46,7 @@ Score: ${item.score}
 Language: ${item.language}
 Description: ${item.description}
 Onwer: ${item.githubUser}
-Tweets:
-`
+Tweets:`
       let str1 = "";
       if (item.twittes.length == 0) {
         str1 = "No tweets found";
